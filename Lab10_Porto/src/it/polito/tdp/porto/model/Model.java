@@ -1,6 +1,7 @@
 package it.polito.tdp.porto.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jgrapht.Graph;
@@ -66,7 +67,9 @@ public class Model {
 	
 	public String toStringCoatori(Author a) {
 		StringBuilder sb = new StringBuilder();
-		for(Author aut : this.getCoautori(a)) {
+		List<Author> tmp = new ArrayList<>(this.getCoautori(a));
+		Collections.sort(tmp);
+		for(Author aut : tmp) {
 			sb.append(""+aut.toString()+"\n");
 		}
 		return sb.toString();
@@ -88,19 +91,16 @@ public class Model {
 		}
 		return papers;
 	}
+	
 	public String toStringPercorso(Author a1, Author a2) {
 		StringBuilder sb=new StringBuilder();
-		List<Author> autori = new ArrayList(this.getArticoliComuni(a1, a2));
 		List<Paper> papers = new ArrayList(this.getPercorso(a1, a2));
-		if(autori==null) {
-			
-		}else {
-		for(int i=0 ; i<papers.size(); i++) {
-			sb.append(""+autori.get(i)+" / "+autori.get(i+1)+"  :  "+papers.get(i)+"\n");
+		
+		for(Paper p : papers) {
+			sb.append(""+p.toString()+"\n");
 		}
 		return sb.toString();
-		}
-		return "";
+	
 	}
 	
 	public List<Author> getBox2(Author a){

@@ -1,6 +1,9 @@
 package it.polito.tdp.porto;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.porto.db.PortoDAO;
@@ -32,12 +35,15 @@ public class PortoController {
 
     @FXML
     void handleCoautori(ActionEvent event) {
+    	this.boxSecondo.getItems().clear();
     	this.txtResult.clear();
     	Author a = this.boxPrimo.getValue();
     	if(a!=null) {
     	this.txtResult.appendText(model.toStringCoatori(a));
     	}
-    	this.boxSecondo.getItems().addAll(this.model.getBox2(a));
+    	List<Author> tmp = new ArrayList<>(this.model.getBox2(a));
+    	Collections.sort(tmp);
+    	this.boxSecondo.getItems().addAll(tmp);
     }
 
     @FXML
@@ -61,7 +67,9 @@ public class PortoController {
 		AuthorIDMap map = new AuthorIDMap();
 		PortoDAO dao = new PortoDAO();
 		this.model=model;
-		this.boxPrimo.getItems().addAll(dao.getAllAutori(map));
+		List<Author> tmp = new ArrayList<>(dao.getAllAutori(map));
+		Collections.sort(tmp);
+		this.boxPrimo.getItems().addAll(tmp);
 		
 		
 	}
