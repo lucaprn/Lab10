@@ -1,6 +1,6 @@
 package it.polito.tdp.porto.model;
 
-public class Author {
+public class Author{
 
 	private int id;
 	private String lastname;
@@ -68,6 +68,8 @@ public class Author {
 			return false;
 		return true;
 	}
+
+	
 	
 	
 }

@@ -40,7 +40,6 @@ public class Model {
 	public void creaGrafo() {
 		Graphs.addAllVertices(grafo, listaAuthor);
 		this.addEdge();
-		System.out.println(grafo.vertexSet().size());
 		
 	}
 
@@ -93,13 +92,33 @@ public class Model {
 		StringBuilder sb=new StringBuilder();
 		List<Author> autori = new ArrayList(this.getArticoliComuni(a1, a2));
 		List<Paper> papers = new ArrayList(this.getPercorso(a1, a2));
+		if(autori==null) {
+			
+		}else {
 		for(int i=0 ; i<papers.size(); i++) {
 			sb.append(""+autori.get(i)+" / "+autori.get(i+1)+"  :  "+papers.get(i)+"\n");
 		}
 		return sb.toString();
-		
+		}
+		return "";
+	}
+	
+	public List<Author> getBox2(Author a){
+		List<Author> result = new ArrayList<>();
+		List<Author> coautori = new ArrayList<>(this.getCoautori(a));
+		for(Author a1 : this.listaAuthor) {
+			boolean presente = false;
+			for(Author a2 : coautori) {
+				if(a1.getId()==a2.getId() || a1.getId()==a.getId()) {
+					presente = true;
+				}
+			}
+			if(!presente) {
+				result.add(a1);
+			}
+		}
+		return result;
 	}
 	
 	
-
 }
