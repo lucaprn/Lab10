@@ -35,10 +35,13 @@ public class TestPortoDAO {
 		
 		
 		System.out.println("\n--------Stampo Coatori-------\n");
-		List<Author> coautori = new ArrayList<>(pd.getCoautori(2502162));
+		List<Author> coautori = new ArrayList<>(pd.getCoautori(2502162, map));
 		for(Author a : coautori) {
 			System.out.println(a);
 		}
+		
+		System.out.println("\n--------Pubblicazione comune-------\n");
+		System.out.println(pd.getPaper(new Author(719,"Milanese","Mario"), new Author(2185,"Taragna","Michele")));
 	}
 	
 	

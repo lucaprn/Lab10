@@ -5,8 +5,14 @@ import java.util.List;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
+import org.jgrapht.traverse.DepthFirstIterator;
+
 
 import it.polito.tdp.porto.db.PortoDAO;
 
@@ -28,27 +34,28 @@ public class Model {
 		listaPaper = new ArrayList(dao.getAllPaper(mapPaper));
 		listaAuthor = new ArrayList(dao.getAllAutori(mapAuthor));
 		grafo = new SimpleGraph<>(DefaultEdge.class);
+		
 	}
 	
 	public void creaGrafo() {
 		Graphs.addAllVertices(grafo, listaAuthor);
 		this.addEdge();
+		System.out.println(grafo.vertexSet().size());
 		
 	}
 
 	private void addEdge() {
 		for(Paper p : this.listaPaper){
-			List<Author> autori = new ArrayList<>(dao.getCoautori(p.getEprintid()));
-			if(autori.size()>0) {
-				Author a = autori.get(0);
-				for(int i =1 ; i<autori.size(); i++) {
-					grafo.addEdge(a, autori.get(i));
+			List<Author> autori = new ArrayList<>(dao.getCoautori(p.getEprintid(),mapAuthor));
+			for(int i =0 ; i<autori.size(); i++) {
+				for(int j=i+1; j<autori.size(); j++) {
+					grafo.addEdge(autori.get(i), autori.get(j));
 				}
 			}
 		}
-		
+	
 	}
-
+	
 	public Graph<Author, DefaultEdge> getGrafo() {
 		return grafo;
 	}
@@ -64,7 +71,35 @@ public class Model {
 			sb.append(""+aut.toString()+"\n");
 		}
 		return sb.toString();
+	}
+	
+	public List<Author> getArticoliComuni(Author a1,Author a2){
+		List<Author> result;
+		DijkstraShortestPath<Author, DefaultEdge> cammino = new DijkstraShortestPath<>(this.grafo);
+		result = new ArrayList<>(cammino.getPath(a1, a2).getVertexList());
+		return result;
+	}
+	
+	public List<Paper> getPercorso(Author a1, Author a2) {
+		List<Author> autori = new ArrayList<>(this.getArticoliComuni(a1, a2));
+		List<Paper> papers = new ArrayList<>();
+		for(int i=0 ; i<autori.size()-1; i++) {
+			papers.add(dao.getPaper(autori.get(i),autori.get(i+1)));
+			
+		}
+		return papers;
+	}
+	public String toStringPercorso(Author a1, Author a2) {
+		StringBuilder sb=new StringBuilder();
+		List<Author> autori = new ArrayList(this.getArticoliComuni(a1, a2));
+		List<Paper> papers = new ArrayList(this.getPercorso(a1, a2));
+		for(int i=0 ; i<papers.size(); i++) {
+			sb.append(""+autori.get(i)+" / "+autori.get(i+1)+"  :  "+papers.get(i)+"\n");
+		}
+		return sb.toString();
 		
 	}
+	
+	
 
 }

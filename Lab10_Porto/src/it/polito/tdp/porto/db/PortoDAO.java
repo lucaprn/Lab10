@@ -114,7 +114,7 @@ public class PortoDAO {
 		return result;	
 	}
 	
-	public List<Author> getCoautori(int idpubblicazione){
+	public List<Author> getCoautori(int idpubblicazione,AuthorIDMap map){
 		List<Author> coAutori = new ArrayList<>();
 		final String sql = "SELECT a.id, a.lastname, a.firstname FROM creator AS c, author AS a WHERE c.authorid=a.id AND c.eprintid=?";
 		try {
@@ -125,17 +125,46 @@ public class PortoDAO {
 			
 			while (rs.next()) {
 				Author autore = new Author(rs.getInt("id"), rs.getString("lastname"), rs.getString("firstname"));
-				coAutori.add(autore);
+				coAutori.add(map.get(autore));
 			}
 			conn.close();
-
+			return coAutori;
 
 		} catch (SQLException e) {
 			 e.printStackTrace();
 			throw new RuntimeException("Errore Db");
 		}
-		return coAutori;
 		
+		
+	}
+
+	public Paper getPaper(Author a1, Author a2) {
+		
+		final String sql = "SELECT p1.eprintid, p1.title, p1.issn, p1.publication, p1.type, p1.types  FROM creator AS c1, creator AS c2, paper AS p1 WHERE c1.eprintid=c2.eprintid AND p1.eprintid=c1.eprintid AND c1.authorid=? AND c2.authorid=?";
+		Paper paper =null;
+		try {
+			
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, a1.getId());
+			st.setInt(2, a2.getId());
+
+			ResultSet rs = st.executeQuery();
+
+			if (rs.next()) {
+				paper = new Paper(rs.getInt("eprintid"), rs.getString("title"), rs.getString("issn"),
+						rs.getString("publication"), rs.getString("type"), rs.getString("types"));
+				
+			}
+			conn.close();
+			return paper;
+
+		} catch (SQLException e) {
+			 e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+		}
+		
+	
 	}
 	
 }

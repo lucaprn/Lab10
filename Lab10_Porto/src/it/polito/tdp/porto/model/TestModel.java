@@ -2,8 +2,8 @@ package it.polito.tdp.porto.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.jgrapht.graph.SimpleGraph;
+
 
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 
@@ -22,7 +22,7 @@ public class TestModel {
 		for(Author a : tmp) {
 			System.out.println(a);
 		}*/
-		System.out.println(model.toStringCoatori(new Author(85,"Belforte","Gustavo")));
+		System.out.println(model.toStringPercorso(new Author(27355,"Zhang","Linchao"),new Author(2185,"Taragna","Michele")));
 	
 		
 	}
